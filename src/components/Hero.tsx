@@ -15,7 +15,7 @@ const Hero = () => {
          BY8
         </h2>
         <p className="text-base sm:text-lg md:text-2xl lg:text-5xl text-center font-semibold mt-6" >
-        Exploring Ideas, Stories, and Innovation—Tech and Beyond
+        Infinite Thoughts, One Byte at a Time.
         </p>
       </div>
     </div>
