@@ -18,7 +18,7 @@ export const sendWelcomeEmail = async (email: string) => {
     html: `
       <h1>Welcome to Our Newsletter!</h1>
       <p>Thank you for subscribing to our blog newsletter. You'll receive updates whenever we publish new content.</p>
-      <p>Best regards,<br>Byte Blog </p>
+      <p>Best regards,<br>By8 Blog </p>
     `,
   });
 };
