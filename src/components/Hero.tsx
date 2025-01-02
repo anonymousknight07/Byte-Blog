@@ -12,7 +12,7 @@ const Hero = () => {
       />
       <div className="absolute top-0 w-full h-full bg-gradient-to-b from-[#251e56]/90 to-[#0a0a0bb8]/90 text-gray-100 flex flex-col items-center justify-center px-4">
         <h2 className="text-3xl sm:text-4xl md:text-7xl lg:text-[150px] font-bold text-center">
-         InsightSphere
+         BY8
         </h2>
         <p className="text-base sm:text-lg md:text-2xl lg:text-5xl text-center font-semibold mt-6" >
         Exploring Ideas, Stories, and Innovation—Tech and Beyond
