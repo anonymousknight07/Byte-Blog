@@ -1,27 +1,63 @@
 import {defineType, defineArrayMember} from 'sanity'
 
-/**
- * This is the schema definition for the rich text fields used for
- * for this blog studio. When you import it in schemas.js it can be
- * reused in other parts of the studio with:
- *  {
- *    name: 'someName',
- *    title: 'Some title',
- *    type: 'blockContent'
- *  }
- */
-export default defineType({
+interface Style {
+  title: string;
+  value: string;
+}
+
+interface List {
+  title: string;
+  value: string;
+}
+
+interface Decorator {
+  title: string;
+  value: string;
+}
+
+interface AnnotationField {
+  title: string;
+  name: string;
+  type: string;
+  validation?: (Rule: any) => any;
+  initialValue?: boolean;
+  to?: { type: string }[];
+}
+
+interface Annotation {
+  title: string;
+  name: string;
+  type: string;
+  fields: AnnotationField[];
+}
+
+interface BlockContent {
+  title: string;
+  name: string;
+  type: string;
+  of: Array<{
+    title: string;
+    type: string;
+    styles: Style[];
+    lists: List[];
+    marks: {
+      decorators: Decorator[];
+      annotations: Annotation[];
+    };
+  } | {
+    type: string;
+    options: { hotspot: boolean };
+  }>;
+}
+
+const blockContent: BlockContent = {
   title: 'Block Content',
   name: 'blockContent',
   type: 'array',
   of: [
-    defineArrayMember({
+    {
       title: 'Block',
       type: 'block',
-      // Styles let you set what your user can mark up blocks with. These
-      // correspond with HTML tags, but you can set any title or value
-      // you want and decide how you want to deal with it where you want to
-      // use your content.
       styles: [
         {title: 'Normal', value: 'normal'},
         {title: 'H1', value: 'h1'},
@@ -31,15 +67,13 @@ export default defineType({
         {title: 'Quote', value: 'blockquote'},
       ],
       lists: [{title: 'Bullet', value: 'bullet'}],
-      // Marks let you mark up inline text in the block editor.
       marks: {
-        // Decorators usually describe a single property – e.g. a typographic
-        // preference or highlighting by editors.
         decorators: [
           {title: 'Strong', value: 'strong'},
           {title: 'Emphasis', value: 'em'},
+          {title: 'Underline', value: 'underline'},
+          {title: 'Strike', value: 'strike'},
         ],
-        // Annotations can be any object structure – e.g. a link or a footnote.
         annotations: [
           {
             title: 'URL',
@@ -50,18 +84,43 @@ export default defineType({
                 title: 'URL',
                 name: 'href',
                 type: 'url',
+                validation: (Rule) =>
+                  Rule.uri({
+                    scheme: ['http', 'https', 'mailto', 'tel'],
+                  }),
+              },
+              {
+                title: 'Open in new tab',
+                name: 'blank',
+                type: 'boolean',
+                initialValue: true,
+              },
+            ],
+          },
+          {
+            title: 'Internal Link',
+            name: 'internalLink',
+            type: 'object',
+            fields: [
+              {
+                title: 'Reference',
+                name: 'reference',
+                type: 'reference',
+                to: [
+                  { type: 'post' },
+                  { type: 'author' },
+                ],
               },
             ],
           },
         ],
       },
-    }),
-    // You can add additional types here. Note that you can't use
-    // primitive types such as 'string' and 'number' in the same array
-    // as a block type.
-    defineArrayMember({
+    },
+    {
       type: 'image',
       options: {hotspot: true},
-    }),
+    },
   ],
-})
+};
+
+export default defineType(blockContent);

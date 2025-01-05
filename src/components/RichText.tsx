@@ -47,11 +47,16 @@ export const RichText = {
   },
   marks: {
     link: ({ children, value }: any) => {
-      const rel = !value.href.startWith("/")
+      const rel = !value.href.startsWith("/")
         ? "noreferrer noopener"
         : undefined;
       return (
-        <Link href={value.href} rel={rel} className="underline">
+        <Link 
+          href={value.href} 
+          rel={rel} 
+          className="text-blue-600 underline hover:text-blue-800"
+          target={!value.href.startsWith("/") ? "_blank" : undefined}
+        >
           {children}
         </Link>
       );
