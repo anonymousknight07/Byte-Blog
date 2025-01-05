@@ -28,7 +28,7 @@ export default defineType({
       name: "author",
       title: "Author",
       type: "reference",
-      to: { type: "author" },
+      to: [{type: "author"}],
     }),
     defineField({
       name: "mainImage",
@@ -37,6 +37,13 @@ export default defineType({
       options: {
         hotspot: true,
       },
+    }),
+    defineField({
+      name: "fontStyle",
+      title: "Font Style",
+      type: "reference",
+      weak: false,
+      to: [{type: "fontStyle"}],
     }),
     defineField({
       name: "categories",

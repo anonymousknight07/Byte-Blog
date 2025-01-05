@@ -7,6 +7,7 @@ type Base = {
 };
 
 export interface Post extends Base {
+  fontStyle: string;
   author: Author;
   body: Block[];
   categories: Category[];
