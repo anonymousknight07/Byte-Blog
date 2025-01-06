@@ -1,6 +1,7 @@
 import { urlFor } from "@/lib/createClient";
 import Image from "next/image";
 import Link from "next/link";
+import CodeBlock from "./CodeBlock";
 
 export const RichText = {
   types: {
@@ -15,6 +16,14 @@ export const RichText = {
             className="object-contain rounded-lg shadow-md"
           />
         </div>
+      );
+    },
+    code: ({ value }: any) => {
+      return (
+        <CodeBlock
+          code={value.code}
+          language={value.language}
+        />
       );
     },
   },

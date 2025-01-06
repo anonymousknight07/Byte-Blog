@@ -1,56 +1,6 @@
-import {defineType, defineArrayMember} from 'sanity'
+import { defineType } from 'sanity'
 
-interface Style {
-  title: string;
-  value: string;
-}
-
-interface List {
-  title: string;
-  value: string;
-}
-
-interface Decorator {
-  title: string;
-  value: string;
-}
-
-interface AnnotationField {
-  title: string;
-  name: string;
-  type: string;
-  validation?: (Rule: any) => any;
-  initialValue?: boolean;
-  to?: { type: string }[];
-}
-
-interface Annotation {
-  title: string;
-  name: string;
-  type: string;
-  fields: AnnotationField[];
-}
-
-interface BlockContent {
-  title: string;
-  name: string;
-  type: string;
-  of: Array<{
-    title: string;
-    type: string;
-    styles: Style[];
-    lists: List[];
-    marks: {
-      decorators: Decorator[];
-      annotations: Annotation[];
-    };
-  } | {
-    type: string;
-    options: { hotspot: boolean };
-  }>;
-}
-
-const blockContent: BlockContent = {
+const blockContent = defineType({
   title: 'Block Content',
   name: 'blockContent',
   type: 'array',
@@ -118,9 +68,14 @@ const blockContent: BlockContent = {
     },
     {
       type: 'image',
-      options: {hotspot: true},
+      options: {
+        hotspot: true,
+      },
+    },
+    {
+      type: 'code',
     },
   ],
-};
+});
 
-export default defineType(blockContent);
+export default blockContent;
