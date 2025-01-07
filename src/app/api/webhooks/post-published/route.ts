@@ -1,35 +1,54 @@
 import { NextResponse } from 'next/server';
-import { handlePostPublish } from '@/sanity/webhooks';
+import { getAllSubscribers } from '@/lib/subscribers';
+import { sendNewPostEmail } from '@/lib/email';
 
 export async function POST(request: Request) {
   try {
     // Verify webhook secret
     const authHeader = request.headers.get('authorization');
     if (authHeader !== `Bearer ${process.env.WEBHOOK_SECRET}`) {
-      console.error('Unauthorized webhook attempt');
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { message: 'Unauthorized' },
+        { status: 401 }
+      );
     }
 
-    const body = await request.json();
-    console.log('Received webhook payload:', body);
+    const post = await request.json();
     
-    // Handle post publish event
-    if (body._type === 'post') {
-      try {
-        await handlePostPublish(body._id);
-        console.log('Successfully sent notifications for post:', body._id);
-        return NextResponse.json({ message: 'Notification sent successfully' });
-      } catch (error) {
-        console.error('Failed to send notifications:', error);
-        throw error;
-      }
+    // Validate post data
+    if (!post.title || !post.description || !post.slug?.current) {
+      return NextResponse.json(
+        { message: 'Invalid post data' },
+        { status: 400 }
+      );
     }
 
-    return NextResponse.json({ message: 'Ignored non-post document' });
-  } catch (error) {
-    console.error('Webhook error:', error);
+    // Get active subscribers
+    const subscribers = await getAllSubscribers();
+    if (subscribers.length === 0) {
+      return NextResponse.json(
+        { message: 'No subscribers to notify' },
+        { status: 200 }
+      );
+    }
+
+    // Send notification emails
+    const success = await sendNewPostEmail(subscribers, post);
+    if (!success) {
+      return NextResponse.json(
+        { message: 'Failed to send notifications' },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
-      { message: 'Failed to process webhook', error: error instanceof Error ? error.message : 'Unknown error' },
+      { message: `Notified ${subscribers.length} subscribers` },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Error processing webhook:', error);
+    return NextResponse.json(
+      { message: 'Failed to process webhook' },
       { status: 500 }
     );
   }

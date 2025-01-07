@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
+import { addSubscriber } from '@/lib/subscribers';
 import { sendWelcomeEmail } from '@/lib/email';
-import { Subscriber } from '@/lib/types/mongodb';
 
 export async function POST(request: Request) {
   try {
@@ -22,27 +21,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const client = await clientPromise;
-    const db = client.db("blog");
-    const subscribersCollection = db.collection<Subscriber>("subscribers");
-
-    const existingSubscriber = await subscribersCollection.findOne({ email });
-    if (existingSubscriber) {
+    const success = await addSubscriber(email);
+    if (!success) {
       return NextResponse.json(
-        { message: 'You are already subscribed!' },
-        { status: 400 }
+        { message: 'Failed to subscribe' },
+        { status: 500 }
       );
     }
 
-    const newSubscriber: Subscriber = {
-      email,
-      createdAt: new Date(),
-      subscribed: true
-    };
-
-    await subscribersCollection.insertOne(newSubscriber);
-
-    // Send welcome email
     await sendWelcomeEmail(email);
 
     return NextResponse.json(

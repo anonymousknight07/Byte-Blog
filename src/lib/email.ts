@@ -1,10 +1,10 @@
 import nodemailer from 'nodemailer';
-
+import { getAllSubscribers } from './subscribers';
 
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: parseInt(process.env.EMAIL_PORT || '587'),
-  secure: process.env.EMAIL_PORT === '465', // Secure if port is 465
+  secure: process.env.EMAIL_PORT === '465',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
@@ -21,15 +21,16 @@ export const sendWelcomeEmail = async (email: string) => {
       html: `
         <h1>Welcome to Our Newsletter!</h1>
         <p>Thank you for subscribing to our blog newsletter. You'll receive updates whenever we publish new content.</p>
-        <p>Best regards,<br>By8 Blog </p>
+        <p>Best regards,<br>By8 Team</p>
       `,
     });
     console.log(`Welcome email sent to ${email}`);
+    return true;
   } catch (error) {
     console.error('Error sending welcome email:', error);
+    return false;
   }
 };
-
 
 export const sendNewPostEmail = async (
   subscribers: { email: string }[],
@@ -41,10 +42,8 @@ export const sendNewPostEmail = async (
 ) => {
   if (!subscribers || subscribers.length === 0) {
     console.warn('No subscribers to notify.');
-    return;
+    return false;
   }
-
-  console.log('Subscribers:', subscribers);
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   const postUrl = `${baseUrl}/post/${post.slug.current}`;
@@ -63,14 +62,17 @@ export const sendNewPostEmail = async (
     })
   );
 
+
+
   try {
     await Promise.all(emailPromises);
     console.log('New blog post emails sent successfully.');
+    return true;
   } catch (error) {
     console.error('Error sending new blog post emails:', error);
+    return false;
   }
 };
-
 
 export const onNewBlogPost = async (post: {
   title: string;
@@ -78,40 +80,15 @@ export const onNewBlogPost = async (post: {
   slug: { current: string };
 }) => {
   try {
-    
-    const subscribers = await getSubscribersFromDB(); 
+    const subscribers = await getAllSubscribers();
     if (!subscribers || subscribers.length === 0) {
       console.warn('No subscribers found.');
-      return;
+      return false;
     }
 
-    await sendNewPostEmail(subscribers, post);
+    return await sendNewPostEmail(subscribers, post);
   } catch (error) {
     console.error('Error in onNewBlogPost:', error);
+    return false;
   }
 };
-
-
-const getSubscribersFromDB = async (): Promise<{ email: string }[]> => {
-  
-  return [
-    { email: 'subscriber1@example.com' },
-    { email: 'subscriber2@example.com' },
-  ];
-};
-
-
-(async () => {
-  
-  await sendWelcomeEmail('test@example.com');
-
-  
-  await sendNewPostEmail(
-    await getSubscribersFromDB(),
-    {
-      title: 'Test Blog Post',
-      description: 'This is a test email for a new blog post.',
-      slug: { current: 'test-post' },
-    }
-  );
-})();
