@@ -67,10 +67,10 @@ const SlugPage = async ({ params: { slug } }: Props) => {
               alt={post.author?.name || 'Author'}
               className="rounded-full object-cover shadow-md"
             />
-            <h2 className="text-2xl font-bold text-[#251e56]">
+            <h2 className="text-2xl font-bold text-[#251e56] dark:text-[#8b94ff]">
               {post?.author?.name || 'Anonymous'}
             </h2>
-            <p className="text-center text-gray-600">
+            <p className="text-center text-gray-600 dark:text-gray-300">
               {post?.author?.description || 'No description available'}
             </p>
             <div className="flex gap-4">
@@ -82,15 +82,11 @@ const SlugPage = async ({ params: { slug } }: Props) => {
           </div>
         </div>
 
-        <article 
-          className="prose prose-lg max-w-none"
-          style={{ 
-            '--font-style': post.fontStyle || 'inherit'
-          } as React.CSSProperties}
-        >
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">{post.title}</h1>
-          <PostContent body={post.body} fontStyle={post.fontStyle} />
-        </article>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6 transition-colors">
+          {post.title}
+        </h1>
+        
+        <PostContent body={post.body} fontStyle={post.fontStyle} />
       </div>
     </Container>
   );
@@ -101,7 +97,7 @@ const SocialLink = ({ href, icon: Icon }: { href: string; icon: any }) => (
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#251e56] text-white hover:bg-[#773f25] transition-colors duration-200"
+    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#251e56] text-white hover:bg-[#773f25] dark:bg-[#8b94ff] dark:hover:bg-[#ff9f7a] transition-colors duration-200"
   >
     <Icon className="w-5 h-5" />
   </Link>

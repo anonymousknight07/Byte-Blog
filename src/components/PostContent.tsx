@@ -22,7 +22,7 @@ const PostContent = ({ body, fontStyle }: PostContentProps) => {
 
   return (
     <article 
-      className="prose prose-lg max-w-none"
+      className="prose prose-lg max-w-none dark:prose-invert"
       style={{ 
         fontFamily: fontStyle?.fontFamily || 'inherit'
       }}
