@@ -5,9 +5,8 @@ import Container from "@/components/Container";
 import Image from "next/image";
 import { FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import Link from "next/link";
-import { PortableText } from "@portabletext/react";
-import { RichText } from "@/components/RichText";
 import PostContent from "@/components/PostContent";
+import Comments from "@/components/Comments";
 
 interface Props {
   params: {
@@ -98,6 +97,8 @@ const SlugPage = async ({ params: { slug } }: Props) => {
         </h1>
         
         <PostContent body={post.body} fontStyle={post.fontStyle} />
+        
+        <Comments postId={post._id} />
       </div>
     </Container>
   );
