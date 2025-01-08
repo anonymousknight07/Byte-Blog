@@ -33,6 +33,7 @@ const SlugPage = async ({ params: { slug } }: Props) => {
     ...,
     body,
     author->,
+    categories[]->,
     fontStyle->{
       fontUrl,
       fontFamily
@@ -57,6 +58,16 @@ const SlugPage = async ({ params: { slug } }: Props) => {
                 priority
               />
             )}
+            <div className="flex flex-wrap gap-2 mt-4">
+              {post?.categories?.map((category) => (
+                <span
+                  key={category._id}
+                  className="px-3 py-1 text-sm rounded-full bg-[#251e56] text-white dark:bg-[#8b94ff] dark:text-gray-900"
+                >
+                  {category.title}
+                </span>
+              ))}
+            </div>
           </div>
           
           <div className="w-full md:w-1/3 flex flex-col items-center gap-6">

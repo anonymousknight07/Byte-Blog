@@ -39,13 +39,13 @@ const BlogContent = ({ posts }: Props) => {
             <div className="w-full md:w-2/5 flex flex-col justify-between p-4 sm:p-6 lg:p-10">
               <div className="flex flex-col gap-2 sm:gap-3 md:gap-5">
                 <div className="flex flex-wrap gap-2">
-                  {post?.categories?.length > 0 && post.categories.map((item) => (
-                    <p
-                      key={item?._id}
-                      className="text-xs uppercase text-[#251e56] dark:text-[#8b94ff] font-semibold"
+                  {post?.categories?.map((category) => (
+                    <span
+                      key={category._id}
+                      className="px-3 py-1 text-xs rounded-full bg-[#251e56] text-white dark:bg-[#8b94ff] dark:text-gray-900"
                     >
-                      {item?.title}
-                    </p>
+                      {category.title}
+                    </span>
                   ))}
                 </div>
                 <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 dark:text-white hover:text-[#773f25] dark:hover:text-[#ff9f7a] duration-200 cursor-pointer">

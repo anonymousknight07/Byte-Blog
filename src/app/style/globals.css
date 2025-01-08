@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.large-number {
+  word-break: break-all;
+  white-space: normal;
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.number-container {
+  max-width: 100%;
+  overflow-x: hidden;
+  word-wrap: break-word;
+}
