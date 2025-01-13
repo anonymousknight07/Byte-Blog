@@ -1,4 +1,5 @@
 import "../style/globals.css";
+import { ThemeProvider } from "@/lib/context/ThemeContext";
 
 export const metadata = {
   title: "Admin - Akshat Blog",
@@ -13,9 +14,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico"  />
+        <link rel="icon" href="/favicon.ico" />
       </head>
-      <body>{children}</body>
+      <body>
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
