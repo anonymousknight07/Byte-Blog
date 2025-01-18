@@ -1,18 +1,43 @@
+"use client"
 import Link from "next/link";
-import { Post } from "../../types";
+import { Post, Category } from "../../types";
 import Container from "./Container";
 import Image from "next/image";
 import { urlFor } from "@/lib/createClient";
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface Props {
   posts: Post[];
+  activeCategory?: Category | null;
 }
 
-const BlogContent = ({ posts }: Props) => {
+const BlogContent = ({ posts, activeCategory }: Props) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const defaultAuthorImage = "https://cdn.sanity.io/images/mnzfyx37/production/b41d3b494d876249a9e145a6f2b9a1e21b26e485-500x500.png";
+
+  const handleCategoryClick = (e: React.MouseEvent<HTMLSpanElement>, categoryId: string) => {
+    e.preventDefault();
+    const currentCategory = searchParams.get('category');
+    
+    if (currentCategory === categoryId) {
+      router.push('/');
+    } else {
+      router.push(`/?category=${categoryId}`);
+    }
+  };
 
   return (
     <Container className="bg-gray-100 dark:bg-gray-800 py-6 sm:py-10 md:py-20 px-4 md:px-10 flex flex-col gap-6 sm:gap-10">
+      {activeCategory && (
+        <div className="bg-white dark:bg-gray-900 p-4 rounded-lg shadow-sm">
+          <p className="text-gray-700 dark:text-gray-300">
+            Displaying all blogs in <span className="font-semibold text-[#251e56] dark:text-[#8b94ff]">{activeCategory.title}</span>
+            {' '}({posts.length} {posts.length === 1 ? 'post' : 'posts'})
+          </p>
+        </div>
+      )}
+
       {posts.map((post) => (
         <Link
           href={{
@@ -42,7 +67,10 @@ const BlogContent = ({ posts }: Props) => {
                   {post?.categories?.map((category) => (
                     <span
                       key={category._id}
-                      className="px-3 py-1 text-xs rounded-full bg-[#251e56] text-white dark:bg-[#8b94ff] dark:text-gray-900"
+                      onClick={(e) => handleCategoryClick(e, category._id)}
+                      className={`px-3 py-1 text-xs rounded-full bg-[#251e56] text-white dark:bg-[#8b94ff] dark:text-gray-900 cursor-pointer hover:opacity-80 transition-opacity ${
+                        searchParams.get('category') === category._id ? 'ring-2 ring-offset-2 ring-[#251e56] dark:ring-[#8b94ff]' : ''
+                      }`}
                     >
                       {category.title}
                     </span>
